@@ -1,32 +1,31 @@
-name: Build pokeemerald-expansion
+name: Build ROM
 
 on:
-  workflow_dispatch:   # manual trigger
   push:
-    branches:
-      - master
-      - upcoming
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
+  workflow_dispatch:   # allows manual trigger
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30   # belongs here, not inside steps
+
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Install dependencies
         run: |
-          sudo apt-get update
+          sudo apt-get update -y
           sudo apt-get install -y make gcc-arm-none-eabi binutils-arm-none-eabi libnewlib-arm-none-eabi libpng-dev python3
 
       - name: Build ROM
-        run: make -j$(nproc)
+        run: make -C pokeemerald
 
-    - name: Upload artifact
-  uses: actions/upload-artifact@v4
-  with:
-    name: pokeemerald-rom
-    path: pokeemerald-expansion/pokeemerald.gba
-retention-days: 180 
-
+      - name: Upload ROM
+        uses: actions/upload-artifact@v4
+        with:
+          name: pokemonemerald-rom
+          path: pokeemerald/pokemonemerald.gba
+          retention-days: 90   # valid here, inside with:
