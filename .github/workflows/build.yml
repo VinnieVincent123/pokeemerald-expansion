@@ -51,3 +51,30 @@ jobs:
       - name: Automatically pass for allcontributors
         run: echo "CI automatically passes for allcontributors" && exit 0
 
+name: Build pokeemerald-expansion
+
+on:
+  workflow_dispatch:   # allows manual trigger
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make gcc-arm-none-eabi binutils-arm-none-eabi
+
+      - name: Build ROM
+        run: make
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: pokeemerald-rom
+          path: pokeemerald.gba
