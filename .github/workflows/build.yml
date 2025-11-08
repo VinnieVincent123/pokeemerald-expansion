@@ -28,5 +28,5 @@ jobs:
   with:
     name: pokeemerald-rom
     path: pokeemerald.gba
-
+retention-days: 180 
 
